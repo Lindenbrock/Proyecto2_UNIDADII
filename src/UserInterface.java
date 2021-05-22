@@ -30,7 +30,7 @@ import javax.swing.KeyStroke;
 
 public class UserInterface extends JFrame implements ActionListener, MouseWheelListener{
 	JFrame W;
-	JPanel pestaña1,pestaña2;
+	JPanel paintPanel;
 	JMenuBar menuBar;
 	JMenuItem menuOptions[];
 	JMenu menu1,menu2;
@@ -39,7 +39,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 	Color one,two,three,four;
 	JTabbedPane pestañas;
 	URL ruta;
-	//Figure fig1,fig2;
+	Figure Fig;
 	Image Background,icon;
 	boolean move=false;
 	
@@ -51,67 +51,45 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 
 		
 		//Icono de la interfaz
-		//icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
-		//setIconImage(icon);
+		icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
+		setIconImage(icon);
 		
-		one = new Color(43,46,74);
-		two = new Color(232,69,69);
-		three = new Color(144,55,73);
-		four = new Color(83,53,74);
+		one = new Color(48,48,48);
+		two = Color.WHITE;
 		
 		buildMenu();
 		buildToolBar();
-		buildTabbedPane();
+		buildPaintPanel();
 		
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	//CONSTRUYENDO LAS PESTAÑAS QUE MUESTRAN LAS FIGURAS
-	public void buildTabbedPane() {
-		pestañas = new JTabbedPane();
-		pestañas.setBackground(four);
-		add(pestañas);
+	//CONSTRUYENDO EL PANEL DONDE SE DIBUJA LA FIGURA
+	public void buildPaintPanel() {		
+		ruta = getClass().getResource("/Resources/grid1.jpg");
+		Background = new ImageIcon(ruta).getImage();
 		
-		ruta = getClass().getResource("/Resources/grid1.jpg"); //Fonde de las pestañas
-		//Background = new ImageIcon(ruta).getImage();
-		
-		//Pintar figura en la pestaña 1
-		pestaña1 = new JPanel() {
+		paintPanel = new JPanel(){
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				g.drawImage(Background, 0, 0,pestaña1.getWidth(),pestaña1.getHeight(),pestaña1);
+				g.drawImage(Background, 0, 0,paintPanel.getWidth(),paintPanel.getHeight(),paintPanel);
 				int maxx=getWidth(),maxy=getHeight();
-				g.setColor(three);
-				g.fillRect(maxx-300,maxy-200,300,200);
-				//fig1.drawPointVector(g,1);
-				//fig1.windowMapping(maxx, maxx-300, maxy, maxy-200, maxx, maxy, g, 1);
+				g.setColor(one);
+				g.fillRect(maxx-300,maxy-190,300,190);
+				Fig.drawShape(g);
+				Fig.windowMapping(maxx, maxx-300, maxy, maxy-190, maxx, maxy, g);
 			}
 		};
 		
-		//Pintar figura en la pestaña 2
-		pestaña2 = new JPanel(){
-			public void paintComponent(Graphics g) {
-				super.paintComponent(g);
-				g.drawImage(Background, 0, 0,pestaña2.getWidth(),pestaña2.getHeight(),pestaña2);
-				int maxx=getWidth(),maxy=getHeight();
-				g.setColor(three);
-				g.fillRect(maxx-300,maxy-200,300,200);
-				//fig2.drawPointVector(g,2);
-				//fig2.windowMapping(maxx, maxx-300, maxy, maxy-200, maxx, maxy, g, 2);
-			}
-		};
+		add(paintPanel);
 		
-		pestañas.add(pestaña1,"Figura 1");
-		pestañas.add(pestaña2,"Figura 2");
-		
-		//fig1 = new Figure();
-		//fig2 = new Figure();
+		Fig = new Figure();
 		
 		//pestañas.addMouseWheelListener(this); //Evento para editar tamaño con la rueda del ratón
 		
 		//EVENTOS PARA ROTAR FIGURA CON CLICKS
-		pestañas.addMouseListener(new MouseAdapter() {
+		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				int cX = e.getX(),cY = e.getY(),nf;
 				Point pfx,pfy;
@@ -147,7 +125,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		});
 		
 		//EVENTO PARA MOVER LA FIGURA CON EL ARRASTRE DEL RATÓN
-		pestañas.addMouseMotionListener(new MouseMotionAdapter() {
+		addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
 				int cX = e.getX(), cY = e.getY(), tX, tY, pcX, pcY, nf;
 				
@@ -178,10 +156,10 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		toolBar = new JToolBar("",JToolBar.VERTICAL);
 		toolBar.setBackground(one);
 		toolBar.setFloatable(false);
-		add(toolBar,BorderLayout.WEST);
+		add(toolBar,BorderLayout.EAST);
 		
 		ruta = getClass().getResource("/Resources/undo.png"); //Botón de restaurar
-		Action A1=new AbstractAction(""/*, new ImageIcon(ruta)*/){
+		Action A1=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
             	/*boolean ans = new RestoreDialog(MainInterface.this,true).showDialog();
     			if(ans)
@@ -198,7 +176,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         toolBar.add(btnA1);
         
         ruta = getClass().getResource("/Resources/rotate-left.png"); //Botón de girar a la izquierda
-		Action A2=new AbstractAction(""/*, new ImageIcon(ruta)*/){
+		Action A2=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
             	
             }};
@@ -209,7 +187,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         toolBar.add(btnA2);
         
         ruta = getClass().getResource("/Resources/rotate-right.png"); //Botón de girar a al derecha
-		Action A3=new AbstractAction(""/*, new ImageIcon(ruta))*/){
+		Action A3=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
             	
             }};
@@ -220,7 +198,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         toolBar.add(btnA3);
         
         ruta = getClass().getResource("/Resources/refx.png"); //Botón de reflejar respecto al eje X
-		Action A4=new AbstractAction(""/*, new ImageIcon(ruta)*/){
+		Action A4=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
             	
             }};
@@ -231,7 +209,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         toolBar.add(btnA4);
 		
         ruta = getClass().getResource("/Resources/refy.png"); //Botón de reflejar respecto al eje Y
-        Action A5=new AbstractAction(""/*, new ImageIcon(ruta)*/){
+        Action A5=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
             	
             }};
@@ -242,7 +220,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         toolBar.add(btnA5);
         
         ruta = getClass().getResource("/Resources/refxy.png"); //Botón de reflejar respecto a ambos ejes
-        Action A6=new AbstractAction(""/*, new ImageIcon(ruta)*/){
+        Action A6=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
             	
             }};
@@ -253,7 +231,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         toolBar.add(btnA6);
         
         ruta = getClass().getResource("/Resources/close.png"); //Botón de aumentar tamaño
-        Action A7=new AbstractAction(""/*, new ImageIcon(ruta)*/){
+        Action A7=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
             	
             }};
@@ -264,7 +242,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         toolBar.add(btnA7);
         
         ruta = getClass().getResource("/Resources/far.png"); //Botón de disminuir tamaño
-        Action A8=new AbstractAction(""/*, new ImageIcon(ruta)*/){
+        Action A8=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
             	
             }};
@@ -275,7 +253,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         toolBar.add(btnA8);
         
         ruta = getClass().getResource("/Resources/exit.png"); //Salir del programa
-        Action A9=new AbstractAction(""/*, new ImageIcon(ruta)*/){
+        Action A9=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
             	
             }};
@@ -289,14 +267,15 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 	//CONSTRUYENDO EL MENU
 	private void buildMenu() {
 		menuBar = new JMenuBar();
-		menuBar.setBackground(two);
+		menuBar.setBackground(one);
+		menuBar.setBorder(null);
 		setJMenuBar(menuBar);
 		
 		menu1 = new JMenu("Trasformaciones");
-		menu1.setForeground(one);
+		menu1.setForeground(two);
 		
 		menu2 = new JMenu("Acerca de");
-		menu2.setForeground(one);
+		menu2.setForeground(two);
 		
 		menuBar.add(menu1); menuBar.add(menu2);
 		
@@ -307,6 +286,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		for(int i=0;i<mOptions.length;i++) {		//Ciclo para crear cada uno de los item del menú en un ciclo
 			menuOptions[i] = new JMenuItem(mOptions[i]);
 			menuOptions[i].setBackground(one);
+			menuOptions[i].setBorder(null);
 		}
 		for(int i=0;i<7;i++) {//Ciclo para añadir los items al menu
 			menu1.add(menuOptions[i]);
@@ -316,64 +296,73 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		//menuOptions[0].addActionListener(this);  //Opción para restaurar
 		menuOptions[0].setMnemonic('R');
 		menuOptions[0].setToolTipText("Restaura la figura a su forma originaL");
+		menuOptions[0].setForeground(two);
 		ruta = getClass().getResource("/Resources/undo.png");
-		//menuOptions[0].setIcon(new ImageIcon(ruta));
+		menuOptions[0].setIcon(new ImageIcon(ruta));
 		menuOptions[0].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U,InputEvent.ALT_MASK));
 		
 		//menuOptions[1].addActionListener(this);  //Opción para escalar
 		menuOptions[1].setMnemonic('E');
 		menuOptions[1].setToolTipText("Cambia el tamaño de la figura");
+		menuOptions[1].setForeground(two);
 		ruta = getClass().getResource("/Resources/scale.png");
-		//menuOptions[1].setIcon(new ImageIcon(ruta));
+		menuOptions[1].setIcon(new ImageIcon(ruta));
 		menuOptions[1].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.ALT_MASK));
 		
 		//menuOptions[2].addActionListener(this);  //Opción para deformar
 		menuOptions[2].setMnemonic('D');
 		menuOptions[2].setToolTipText("Cambia la forma de la figura");
+		menuOptions[2].setForeground(two);
 		ruta = getClass().getResource("/Resources/sheary.png");
-		//menuOptions[2].setIcon(new ImageIcon(ruta));
+		menuOptions[2].setIcon(new ImageIcon(ruta));
 		menuOptions[2].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.ALT_MASK));
 		
 		//menuOptions[3].addActionListener(this);  //Opción para girar
 		menuOptions[3].setMnemonic('G');
 		menuOptions[3].setToolTipText("Gira la figura");
+		menuOptions[3].setForeground(two);
 		ruta = getClass().getResource("/Resources/rotate-right.png");
-		//menuOptions[3].setIcon(new ImageIcon(ruta));
+		menuOptions[3].setIcon(new ImageIcon(ruta));
 		menuOptions[3].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,InputEvent.ALT_MASK));
 		
 		//menuOptions[4].addActionListener(this);  //Opción para trasladar
 		menuOptions[4].setMnemonic('T');
 		menuOptions[4].setToolTipText("Traslada la figura a un pundo deseado");
+		menuOptions[4].setForeground(two);
 		ruta = getClass().getResource("/Resources/move.png");
-		//menuOptions[4].setIcon(new ImageIcon(ruta));
+		menuOptions[4].setIcon(new ImageIcon(ruta));
 		menuOptions[4].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,InputEvent.ALT_MASK));
 		
 		//menuOptions[5].addActionListener(this); //Opción para felejar
 		menuOptions[5].setMnemonic('R');
 		menuOptions[5].setToolTipText("Refleja la figura");
+		menuOptions[5].setForeground(two);
 		ruta = getClass().getResource("/Resources/refy.png");
-		//menuOptions[5].setIcon(new ImageIcon(ruta));
+		menuOptions[5].setIcon(new ImageIcon(ruta));
 		menuOptions[5].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,InputEvent.ALT_MASK));
 		
 		//menuOptions[6].addActionListener(this);  //Opción para salir del programa
 		menuOptions[6].setMnemonic('S');
 		menuOptions[6].setToolTipText("Salir del programa");
+		menuOptions[6].setForeground(two);
 		ruta = getClass().getResource("/Resources/exit.png");
-		//menuOptions[6].setIcon(new ImageIcon(ruta));
+		menuOptions[6].setIcon(new ImageIcon(ruta));
 		menuOptions[6].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,InputEvent.ALT_MASK));
 		
-		//menuOptions[7].addActionListener(this);  //Opción para información del desarrollador
+		menuOptions[7].addActionListener(this);  //Opción para información del desarrollador
 		menuOptions[7].setMnemonic('A');
 		menuOptions[7].setToolTipText("Muestra la información del desarrollador");
+		menuOptions[7].setForeground(two);
 		ruta = getClass().getResource("/Resources/developer.png");
-		//menuOptions[7].setIcon(new ImageIcon(ruta));
+		menuOptions[7].setIcon(new ImageIcon(ruta));
 		menuOptions[7].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,InputEvent.ALT_MASK));
 		
-		//menuOptions[8].addActionListener(this); //Opción para ventana de ayuda
+		menuOptions[8].addActionListener(this); //Opción para ventana de ayuda
 		menuOptions[8].setMnemonic('H');
 		menuOptions[8].setToolTipText("Muestra una ayudar sobre el funcionamiento del programa");
+		menuOptions[8].setForeground(two);
 		ruta = getClass().getResource("/Resources/help.png");
-		//menuOptions[8].setIcon(new ImageIcon(ruta));
+		menuOptions[8].setIcon(new ImageIcon(ruta));
 		menuOptions[8].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1,InputEvent.ALT_MASK));
 	}
 	

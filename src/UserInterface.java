@@ -76,9 +76,9 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 				g.drawImage(Background, 0, 0,paintPanel.getWidth(),paintPanel.getHeight(),paintPanel);
 				int maxx=getWidth(),maxy=getHeight();
 				g.setColor(one);
-				g.fillRect(maxx-300,maxy-190,300,190);
+				g.fillRect(maxx-300,maxy-180,300,180);
 				Fig.drawShape(g);
-				Fig.windowMapping(maxx, maxx-300, maxy, maxy-190, maxx, maxy, g);
+				Fig.windowMapping(maxx, maxx-300, maxy, maxy-180, maxx, maxy, g);
 			}
 		};
 		
@@ -86,7 +86,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		
 		Fig = new Figure();
 		
-		//pestañas.addMouseWheelListener(this); //Evento para editar tamaño con la rueda del ratón
+		paintPanel.addMouseWheelListener(this); //Evento para editar tamaño con la rueda del ratón
 		
 		//EVENTOS PARA ROTAR FIGURA CON CLICKS
 		addMouseListener(new MouseAdapter() {

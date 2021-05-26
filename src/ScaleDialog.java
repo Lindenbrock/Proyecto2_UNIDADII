@@ -17,13 +17,13 @@ public class ScaleDialog extends JDialog{
 	JTextField tf1;
 	JButton btnAllow,btnCancel;
 	
-	public ScaleDialog(MainInterface w,boolean modal) {
+	public ScaleDialog(UserInterface w,boolean modal) {
 		super(w.W,modal);
 		setTitle("Escalar la figura");
 		setSize(350,200);
 		setLayout(new FlowLayout());
 		setLocationRelativeTo(w.W);
-		this.setBackground(w.uno);
+		this.setBackground(w.one);
 		
 		Image icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
 		setIconImage(icon);
@@ -31,14 +31,14 @@ public class ScaleDialog extends JDialog{
 		URL ruta = getClass().getResource("/Resources/scale.png");
 		lbl1 = new JLabel(new ImageIcon(ruta));
 		lbl2 = new JLabel("Cantidad a escalar");
-		lbl2.setForeground(w.dos);
+		lbl2.setForeground(w.two);
 		tf1 = new JTextField(10);
 		btnAllow = new JButton("Aceptar");
-		btnAllow.setBackground(w.tres);
-		btnAllow.setForeground(w.uno);
+		btnAllow.setBackground(w.three);
+		btnAllow.setForeground(w.one);
 		btnCancel = new JButton("Cancelar");
-		btnCancel.setBackground(w.tres);
-		btnCancel.setForeground(w.uno);
+		btnCancel.setBackground(w.three);
+		btnCancel.setForeground(w.one);
 		
 		ruta = getClass().getResource("/Resources/scaleg.gif");
 		lblimg = new JLabel(new ImageIcon(ruta));

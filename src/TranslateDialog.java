@@ -20,13 +20,13 @@ public class TranslateDialog extends JDialog{
 	JButton btnAllow,btnCancel;
 	JPanel pimg;
 	
-	public TranslateDialog(MainInterface w,boolean modal) {
+	public TranslateDialog(UserInterface w,boolean modal) {
 		super(w.W,modal);
 		setTitle("Trasladar la figura");
-		setSize(600,220);
+		setSize(620,220);
 		setLayout(new FlowLayout());
 		setLocationRelativeTo(w.W);
-		this.setBackground(w.uno);
+		this.setBackground(w.one);
 		
 		Image icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
 		setIconImage(icon);
@@ -34,17 +34,17 @@ public class TranslateDialog extends JDialog{
 		URL ruta = getClass().getResource("/Resources/move.png");
 		lbl1 = new JLabel(new ImageIcon(ruta));
 		lbl2 = new JLabel("Cantidad a trasladar en x");
-		lbl2.setForeground(w.dos);
+		lbl2.setForeground(w.two);
 		tf1 = new JTextField(10);
 		lbl3 = new JLabel("Cantidad a trasladar en y");
-		lbl3.setForeground(w.dos);
+		lbl3.setForeground(w.two);
 		tf2 = new JTextField(10);
 		btnAllow = new JButton("Aceptar");
-		btnAllow.setBackground(w.tres);
-		btnAllow.setForeground(w.uno);
+		btnAllow.setBackground(w.three);
+		btnAllow.setForeground(w.one);
 		btnCancel = new JButton("Cancelar");
-		btnCancel.setBackground(w.tres);
-		btnCancel.setForeground(w.uno);
+		btnCancel.setBackground(w.three);
+		btnCancel.setForeground(w.one);
 		
 		ruta = getClass().getResource("/Resources/moveg.gif");
 		lblimg = new JLabel(new ImageIcon(ruta));

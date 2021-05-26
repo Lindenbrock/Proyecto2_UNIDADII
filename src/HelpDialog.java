@@ -36,42 +36,42 @@ public class HelpDialog extends JDialog implements ActionListener{
 		   		+ "Reflejar : Alt + F<p>"
 		   		+ "Salir : Alt + E<p></html>";
 	
-	public HelpDialog(MainInterface w,boolean modal) {
+	public HelpDialog(UserInterface w,boolean modal) {
 		super(w.W,modal);
 		setTitle("Ayuda");
 		setSize(400,300);
 		setLayout(new BorderLayout());
 		setLocationRelativeTo(w.W);
-		this.setBackground(w.uno);
+		this.setBackground(w.one);
 		
 		Image icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
 		setIconImage(icon);
 		
 		panel1 = new JPanel();
-		panel1.setBackground(w.uno);
+		panel1.setBackground(w.one);
 		panel1.setLayout(null);
 		panel1.setSize(400,230);
 		
 		lbl1 = new JLabel(txt1);
-		lbl1.setForeground(w.dos);
+		lbl1.setForeground(w.two);
 		lbl1.setBounds(10, 0, 380, 220);
 		
 		panelBtn = new JPanel();
-		panelBtn.setBackground(w.uno);
+		panelBtn.setBackground(w.one);
 		panelBtn.setLayout(new FlowLayout());
 		panelBtn.setSize(400,70);
 		
 		btnClose = new JButton("Cerrar");
-		btnClose.setBackground(w.tres);
-		btnClose.setForeground(w.uno);
+		btnClose.setBackground(w.three);
+		btnClose.setForeground(w.one);
 		
 		btnNext = new JButton("Más");
-		btnNext.setBackground(w.tres);
-		btnNext.setForeground(w.uno);
+		btnNext.setBackground(w.three);
+		btnNext.setForeground(w.one);
 		
 		btnBack = new JButton("Atrás");
-		btnBack.setBackground(w.tres);
-		btnBack.setForeground(w.uno);
+		btnBack.setBackground(w.three);
+		btnBack.setForeground(w.one);
 		btnBack.setVisible(false);
 		btnBack.addActionListener(this);
 		

@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.Point2D;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -47,19 +48,23 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		setSize(1000,600);
 		setLocationRelativeTo(this);
 		setResizable(false);
-		setTitle("Trasformaciones UI");
+		setTitle("Affine Transform y API Java 2D");
 
 		
 		//Icono de la interfaz
 		icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
 		setIconImage(icon);
 		
-		one = new Color(48,48,48);
-		two = Color.WHITE;
+		one = new Color(247,247,247);
+		two = new Color(57,62,70);
+		three = new Color(92,99,110);
+		four = new Color(248,181,0);
 		
 		buildMenu();
 		buildToolBar();
 		buildPaintPanel();
+		
+		Fig = new Figure();
 		
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,79 +79,54 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				g.drawImage(Background, 0, 0,paintPanel.getWidth(),paintPanel.getHeight(),paintPanel);
-				int maxx=getWidth(),maxy=getHeight();
-				g.setColor(one);
-				g.fillRect(maxx-300,maxy-180,300,180);
+				g.setColor(two);
 				Fig.drawShape(g);
-				Fig.windowMapping(maxx, maxx-300, maxy, maxy-180, maxx, maxy, g);
 			}
 		};
 		
 		add(paintPanel);
 		
-		Fig = new Figure();
-		
-		paintPanel.addMouseWheelListener(this); //Evento para editar tamaño con la rueda del ratón
+		addMouseWheelListener(this); //Evento para editar tamaño con la rueda del ratón
 		
 		//EVENTOS PARA ROTAR FIGURA CON CLICKS
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				int cX = e.getX(),cY = e.getY(),nf;
-				Point pfx,pfy;
-				if(pestañas.getSelectedIndex() == 0) {
-					//pfx = fig1.getFigureXCoordinates(1);
-					//pfy = fig1.getFigureYCoordinates(1);
-					nf = 1;
-				} else {
-					//pfx = fig2.getFigureXCoordinates(2);
-					//pfy = fig2.getFigureYCoordinates(2);
-					nf = 2;
-				}
+				double cX = e.getX(), cY = e.getY();
+				Point2D pfx,pfy;
+				pfx = Fig.getMaxMinXFigure();
+				pfy = Fig.getMaxMinYFigure();
 					
-				/*if(cX < pfx.x && e.getClickCount() >= 2)
-					if(nf == 1)
-						fig1.rotateCosHPoint(5, nf);
-					else
-						fig2.rotateCosHPoint(5, nf);
+				if(cX > pfx.getX() && e.getClickCount() >= 2)
+					Fig.rotateFig(5);
 				else
-					if(cX > pfx.y && e.getClickCount() >= 2)
-						if(nf == 1)
-							fig1.rotateSinHPoint(5, nf);
-						else
-							fig2.rotateSinHPoint(5, nf);*/
+					if(cX < pfx.getY() && e.getClickCount() >= 2)
+						Fig.rotateFig(-5);
 				
-				/*if((cX > pfx.x && cX < pfx.y) && (cY > pfy.x && cY < pfy.y))
+				if((cX > pfx.getY() && cX < pfx.getX()) && (cY > pfy.getY() && cY < pfy.getX()))
 					move = true;
 				else
-					move = false;*/
+					move = false;
 					
-				pestañas.repaint(); 
+				repaint(); 
 			}
 		});
 		
 		//EVENTO PARA MOVER LA FIGURA CON EL ARRASTRE DEL RATÓN
 		addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
-				int cX = e.getX(), cY = e.getY(), tX, tY, pcX, pcY, nf;
+				int cX = e.getX(), cY = e.getY(), tX, tY, pcX, pcY;
 				
-				/*if(move) {
-					if(pestañas.getSelectedIndex() == 0) {
-						pcX = (int) fig1.fig1[0].x;
-						pcY = (int) fig1.fig1[0].y;
-						nf = 1;
-					}else {
-						pcX = (int) fig2.fig2[0].x;
-						pcY = (int) fig2.fig2[0].y;
-						nf = 2;
-					}
+				if(move) {
+					pcX = (int) Fig.Fig2D.getBounds().getCenterX();
+					pcY = (int) Fig.Fig2D.getBounds().getCenterY();
+					
 					tX = cX - pcX;
 					tY = cY - pcY;
-					if(nf == 1)
-						fig1.movePoint(tX, tY, nf);
-					else
-						fig2.movePoint(tX, tY, nf);
-					pestañas.repaint();
-				}*/
+					
+					Fig.translateFig(tX, tY);
+					
+					repaint();
+				}
 			}
 		});
 	}
@@ -267,15 +247,15 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 	//CONSTRUYENDO EL MENU
 	private void buildMenu() {
 		menuBar = new JMenuBar();
-		menuBar.setBackground(one);
+		menuBar.setBackground(four);
 		menuBar.setBorder(null);
 		setJMenuBar(menuBar);
 		
 		menu1 = new JMenu("Trasformaciones");
-		menu1.setForeground(two);
+		menu1.setForeground(one);
 		
 		menu2 = new JMenu("Acerca de");
-		menu2.setForeground(two);
+		menu2.setForeground(one);
 		
 		menuBar.add(menu1); menuBar.add(menu2);
 		
@@ -286,6 +266,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		for(int i=0;i<mOptions.length;i++) {		//Ciclo para crear cada uno de los item del menú en un ciclo
 			menuOptions[i] = new JMenuItem(mOptions[i]);
 			menuOptions[i].setBackground(one);
+			menuOptions[i].setForeground(two);
 			menuOptions[i].setBorder(null);
 		}
 		for(int i=0;i<7;i++) {//Ciclo para añadir los items al menu
@@ -293,58 +274,51 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		}
 		menu2.add(menuOptions[7]); menu2.add(menuOptions[8]); //Los últimos items se agregan al otro menu
 		
-		//menuOptions[0].addActionListener(this);  //Opción para restaurar
+		menuOptions[0].addActionListener(this);  //Opción para restaurar
 		menuOptions[0].setMnemonic('R');
 		menuOptions[0].setToolTipText("Restaura la figura a su forma originaL");
-		menuOptions[0].setForeground(two);
 		ruta = getClass().getResource("/Resources/undo.png");
 		menuOptions[0].setIcon(new ImageIcon(ruta));
 		menuOptions[0].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U,InputEvent.ALT_MASK));
 		
-		//menuOptions[1].addActionListener(this);  //Opción para escalar
+		menuOptions[1].addActionListener(this);  //Opción para escalar
 		menuOptions[1].setMnemonic('E');
 		menuOptions[1].setToolTipText("Cambia el tamaño de la figura");
-		menuOptions[1].setForeground(two);
 		ruta = getClass().getResource("/Resources/scale.png");
 		menuOptions[1].setIcon(new ImageIcon(ruta));
 		menuOptions[1].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.ALT_MASK));
 		
-		//menuOptions[2].addActionListener(this);  //Opción para deformar
+		menuOptions[2].addActionListener(this);  //Opción para deformar
 		menuOptions[2].setMnemonic('D');
 		menuOptions[2].setToolTipText("Cambia la forma de la figura");
-		menuOptions[2].setForeground(two);
 		ruta = getClass().getResource("/Resources/sheary.png");
 		menuOptions[2].setIcon(new ImageIcon(ruta));
 		menuOptions[2].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.ALT_MASK));
 		
-		//menuOptions[3].addActionListener(this);  //Opción para girar
+		menuOptions[3].addActionListener(this);  //Opción para girar
 		menuOptions[3].setMnemonic('G');
 		menuOptions[3].setToolTipText("Gira la figura");
-		menuOptions[3].setForeground(two);
 		ruta = getClass().getResource("/Resources/rotate-right.png");
 		menuOptions[3].setIcon(new ImageIcon(ruta));
 		menuOptions[3].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,InputEvent.ALT_MASK));
 		
-		//menuOptions[4].addActionListener(this);  //Opción para trasladar
+		menuOptions[4].addActionListener(this);  //Opción para trasladar
 		menuOptions[4].setMnemonic('T');
 		menuOptions[4].setToolTipText("Traslada la figura a un pundo deseado");
-		menuOptions[4].setForeground(two);
 		ruta = getClass().getResource("/Resources/move.png");
 		menuOptions[4].setIcon(new ImageIcon(ruta));
 		menuOptions[4].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,InputEvent.ALT_MASK));
 		
-		//menuOptions[5].addActionListener(this); //Opción para felejar
+		menuOptions[5].addActionListener(this); //Opción para felejar
 		menuOptions[5].setMnemonic('R');
 		menuOptions[5].setToolTipText("Refleja la figura");
-		menuOptions[5].setForeground(two);
 		ruta = getClass().getResource("/Resources/refy.png");
 		menuOptions[5].setIcon(new ImageIcon(ruta));
 		menuOptions[5].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,InputEvent.ALT_MASK));
 		
-		//menuOptions[6].addActionListener(this);  //Opción para salir del programa
+		menuOptions[6].addActionListener(this);  //Opción para salir del programa
 		menuOptions[6].setMnemonic('S');
 		menuOptions[6].setToolTipText("Salir del programa");
-		menuOptions[6].setForeground(two);
 		ruta = getClass().getResource("/Resources/exit.png");
 		menuOptions[6].setIcon(new ImageIcon(ruta));
 		menuOptions[6].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,InputEvent.ALT_MASK));
@@ -352,7 +326,6 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		menuOptions[7].addActionListener(this);  //Opción para información del desarrollador
 		menuOptions[7].setMnemonic('A');
 		menuOptions[7].setToolTipText("Muestra la información del desarrollador");
-		menuOptions[7].setForeground(two);
 		ruta = getClass().getResource("/Resources/developer.png");
 		menuOptions[7].setIcon(new ImageIcon(ruta));
 		menuOptions[7].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,InputEvent.ALT_MASK));
@@ -360,7 +333,6 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		menuOptions[8].addActionListener(this); //Opción para ventana de ayuda
 		menuOptions[8].setMnemonic('H');
 		menuOptions[8].setToolTipText("Muestra una ayudar sobre el funcionamiento del programa");
-		menuOptions[8].setForeground(two);
 		ruta = getClass().getResource("/Resources/help.png");
 		menuOptions[8].setIcon(new ImageIcon(ruta));
 		menuOptions[8].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1,InputEvent.ALT_MASK));
@@ -369,25 +341,30 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 	//EVENTOS OPCIONES DE LA BARRA DE MENU
 	public void actionPerformed(ActionEvent ev) {
 		if(ev.getSource() == menuOptions[0]) {  //Evento menu Restaurar
-			
+			boolean ans = new RestoreDialog(UserInterface.this,true).showDialog();
+			/*if(ans)
+				if(pestañas.getSelectedIndex() == 0)
+					fig1.restorePoint(1);
+				else
+					fig2.restorePoint(2);*/
 		} else
 			if(ev.getSource() == menuOptions[1]) {  //Evento menu Escalar
-				/*double esc = new ScaleDialog(MainInterface.this,true).showDialog();
-				if(pestañas.getSelectedIndex() == 0)
+				double esc = new ScaleDialog(UserInterface.this,true).showDialog();
+				/*if(pestañas.getSelectedIndex() == 0)
 					fig1.scaleHPoint(esc,1);
 				else
 					fig2.scaleHPoint(esc,2);*/
 			}else
 				if(ev.getSource() == menuOptions[2]) {  //Evento menu Deformar
-					/*double[] she = new ShearyDialog(MainInterface.this,true).showDialog();
-					if(pestañas.getSelectedIndex() == 0)
+					double[] she = new ShearyDialog(UserInterface.this,true).showDialog();
+					/*if(pestañas.getSelectedIndex() == 0)
 						fig1.shearyHPoint(she[0],she[1],1);
 					else
 						fig2.shearyHPoint(she[0],she[1],2);*/
 				}else
 					if(ev.getSource() == menuOptions[3]) {  //Evento menu Rotar
-						/*int[] rot = new RotateDialog(MainInterface.this,true).showDialog();
-						if(rot[1] == 1)
+						int[] rot = new RotateDialog(UserInterface.this,true).showDialog();
+						/*if(rot[1] == 1)
 							if(pestañas.getSelectedIndex() == 0)
 								fig1.rotateCosHPoint(rot[0],1);
 							else
@@ -399,15 +376,15 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 								fig2.rotateSinHPoint(rot[0],2);*/
 					}else
 						if(ev.getSource() == menuOptions[4]) {  //Evento menu Trasladar
-							/*int[] move= new TranslateDialog(MainInterface.this,true).showDialog();
-							if(pestañas.getSelectedIndex() == 0)
+							int[] move= new TranslateDialog(UserInterface.this,true).showDialog();
+							/*if(pestañas.getSelectedIndex() == 0)
 								fig1.movePoint(move[0],move[1],1);
 							else
 								fig2.movePoint(move[0],move[1],2);*/
 						}else
 							if(ev.getSource() == menuOptions[5]) {  //Evento menu Reflejar
-								/*int ans = new ReflectDialog(MainInterface.this,true).showDialog(),refx,refy;
-								if(ans == 1) {
+								int ans = new ReflectDialog(UserInterface.this,true).showDialog(),refx,refy;
+								/*if(ans == 1) {
 									refx = 1; refy = -1;
 								} else 
 									if(ans == 2) {
@@ -427,16 +404,16 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 									fig2.reflectHPoint(refx,refy,2);*/
 							}else
 								if(ev.getSource() == menuOptions[6]) {  //Evento menu Salir
-									/*boolean ans = new ExitDialog(MainInterface.this,true).showDialog();
+									boolean ans = new ExitDialog(UserInterface.this,true).showDialog();
 									if(ans)
-										System.exit(0);*/
+										System.exit(0);
 								}else
 									if(ev.getSource() == menuOptions[7]) //Evento menu Información del desarrollado
-										/*new AboutDialog(MainInterface.this,true).showDialog();*/
+										new AboutDialog(UserInterface.this,true).showDialog();
 									//else
 										if(ev.getSource() == menuOptions[8]) //Evento menu Ayuda
-											/*new HelpDialog(MainInterface.this,true).showDialog();*/
-		pestañas.repaint();
+											new HelpDialog(UserInterface.this,true).showDialog();
+		repaint();
 	}
 	
 	//EVENTO DE RUEDA DEL RATÓN PARA AUMENTAR O DISMINUIR EL TAMAÑO
@@ -448,12 +425,8 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 			esc = 0.95;
 		else
 			esc = 1.05;
-		
-		/*if(pestañas.getSelectedIndex() == 0)
-			fig1.scaleHPoint(esc,1);
-		else
-			fig2.scaleHPoint(esc,2);*/
-		pestañas.repaint();
+		Fig.scaleFig(esc);
+		repaint();
 	}
 	
 	//MÉTODO MAIN PARA INICIAR PROGRAMA

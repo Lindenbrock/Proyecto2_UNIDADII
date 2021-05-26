@@ -20,13 +20,13 @@ public class ReflectDialog extends JDialog{
 	ButtonGroup rbg;
 	JButton btnAllow,btnCancel;
 	
-	public ReflectDialog(MainInterface w,boolean modal) {
+	public ReflectDialog(UserInterface w,boolean modal) {
 		super(w.W,modal);
 		setTitle("Reflejar la figura");
 		setSize(500,200);
 		setLayout(new FlowLayout());
 		setLocationRelativeTo(w.W);
-		this.setBackground(w.uno);
+		this.setBackground(w.one);
 		
 		Image icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
 		setIconImage(icon);
@@ -39,19 +39,19 @@ public class ReflectDialog extends JDialog{
 		lbl3 = new JLabel(new ImageIcon(ruta));
 		rbg = new ButtonGroup();
 		rb1 = new JRadioButton("Reflejar en X");
-		rb1.setForeground(w.dos);
+		rb1.setForeground(w.two);
 		rb1.setSelected(true);
 		rb2 = new JRadioButton("Reflejar en Y");
-		rb2.setForeground(w.dos);
+		rb2.setForeground(w.two);
 		rb3 = new JRadioButton("Reflejar en X y Y");
-		rb3.setForeground(w.dos);
+		rb3.setForeground(w.two);
 		rbg.add(rb1); rbg.add(rb2); rbg.add(rb3);
 		btnAllow = new JButton("Aceptar");
-		btnAllow.setBackground(w.tres);
-		btnAllow.setForeground(w.uno);
+		btnAllow.setBackground(w.three);
+		btnAllow.setForeground(w.one);
 		btnCancel = new JButton("Cancelar");
-		btnCancel.setBackground(w.tres);
-		btnCancel.setForeground(w.uno);
+		btnCancel.setBackground(w.three);
+		btnCancel.setForeground(w.one);
 		
 		ruta = getClass().getResource("/Resources/refg.gif");
 		lblimg = new JLabel(new ImageIcon(ruta));

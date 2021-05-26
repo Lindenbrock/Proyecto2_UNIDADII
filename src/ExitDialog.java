@@ -25,12 +25,12 @@ public class ExitDialog extends JDialog implements ActionListener{
 		setIconImage(icon);
 		
 		lbl = new JLabel("¿Estás seguro de que deseas salir?");
-		lbl.setForeground(w.one);
+		lbl.setForeground(w.two);
 		btnAllow = new JButton("Aceptar");
-		btnAllow.setBackground(w.one);
+		btnAllow.setBackground(w.three);
 		btnAllow.setForeground(w.one);
 		btnCancel = new JButton("Cancelar");
-		btnCancel.setBackground(w.one);
+		btnCancel.setBackground(w.three);
 		btnCancel.setForeground(w.one);
 		
 		add(lbl); add(btnAllow); add(btnCancel);

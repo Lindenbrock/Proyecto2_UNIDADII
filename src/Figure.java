@@ -1,19 +1,21 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 
 public class Figure {
-	GeneralPath Fig2D,FigMap;
+	GeneralPath PFig2D;
+	Shape Fig2D;
 	double Coordinates[];
-	Point2D Points[],MapPoints[];
+	Point2D Points[];
 	Color one,two;
 	
 	
 	public Figure() {
-		Fig2D = new GeneralPath();
+		PFig2D = new GeneralPath();
 		
 		//Llenar vector con los puntos X y Y de la figura
 		Coordinates = new double[] {
@@ -32,70 +34,59 @@ public class Figure {
 		for(int pos=0,i=0,j=1;pos<Points.length;pos++,i+=2,j+=2)
 			Points[pos] = new Point2D.Double(Coordinates[i],Coordinates[j]);
 		
-		//	CREAR LA FIGURA CON EL VECTOR DE COORDENADAS
-		Fig2D.moveTo(Points[0].getX(),Points[0].getY());
-		for(int i=1;i<Points.length;i++)
-			Fig2D.lineTo(Points[i].getX(), Points[i].getY());
-		Fig2D.closePath();
+		//		CREAR LA FIGURA CON EL VECTOR DE COORDENADAS
+			PFig2D.moveTo(Points[0].getX(),Points[0].getY());
+			for(int i=1;i<Points.length;i++)
+				PFig2D.lineTo(Points[i].getX(), Points[i].getY());
+			PFig2D.closePath();
+			Fig2D = PFig2D;
 		
 		one = new Color(48,48,48);
 		two = Color.WHITE;
 	}
 	
-	
-	//		MAPEO DE LA FIGURA CREADA
-	public void windowMapping(int xvmax, int xvmin, int yvmax, int yvmin, int xwmax, int ywmax, Graphics g) {
-		double sx = (double)(xvmax - xvmin) / (double)(xwmax - 0),  sy = (double)(yvmax - yvmin) / (double)(ywmax - 0);
-
-		FigMap = new GeneralPath();
-		
-		g.setColor(two);
-		MapPoints = new Point2D[Points.length];
-		double x,y;
-		for(int i=0;i<Points.length;i++) {
-			x = Points[i].getX() * sx;
-			x += xvmin;
-			y = Points[i].getY() * sy;
-			y += yvmin;
-			MapPoints[i] = new Point2D.Double(x, y);
-		}
-		
-		FigMap.moveTo(MapPoints[0].getX(),MapPoints[0].getY());
-		for(int i=1;i<MapPoints.length-1;i++)
-			FigMap.lineTo(MapPoints[i].getX(),MapPoints[i].getY());
-		FigMap.closePath();
-		
-		Graphics2D g2 = (Graphics2D)g;
-		g2.fill(FigMap);
-	}
-	
 	//		DIBUJAR LA FIGURA
 	public void drawShape(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		g2.fill(Fig2D);
+		g2.draw(Fig2D);
 	}
 	
-	//		DEVOLVER COORDENADAS X DE LA FIGURA
-	public Point2D getFigureXCoordinates(){
-		Point2D p = new Point2D.Double(Points[0].getX(),Points[0].getX());		
-		for(int i=1;i<Points.length;i++) {
-			if(Points[i].getX() < p.getX())
-				p = new Point2D.Double(Points[i].getX(),Points[0].getX());
-			if(Points[i].getX() > p.getY())
-				p = new Point2D.Double(Points[0].getX(),Points[i].getX());
-		}
+	//		DEVOLVER EL MÁXIMO EN X DE LA FIGURA
+	public Point2D getMaxMinXFigure(){		
+		double xmax = Fig2D.getBounds().getMaxX(),xmin = Fig2D.getBounds().getMinX();
+		Point2D p = new Point2D.Double(xmax,xmin);
 		return p;
 	}
 		
-	//DEVOLVER COORDENADAS Y DE LA FIGURA
-	public Point2D getFigureYCoordinates(){
-		Point2D p = new Point2D.Double(Points[0].getY(),Points[0].getY());	
-		for(int i=1;i<Points.length;i++) {
-			if(Points[i].getY() < p.getX())
-				p = new Point2D.Double(Points[i].getY(),Points[0].getY());
-			if(Points[i].getY() > p.getY())
-				p = new Point2D.Double(Points[0].getY(),Points[i].getY());
-		}
+	//		DEVOLVER EL MÍNIMO EN X DE LA FIGURA
+	public Point2D getMaxMinYFigure(){
+		double ymax = Fig2D.getBounds().getMaxY(),ymin = Fig2D.getBounds().getMinY();
+		Point2D p = new Point2D.Double(ymax,ymin);
 		return p;
+	}
+	
+	/*		-----TRANSFORMACIONES-----		*/
+	
+	//		ROTAR LA FIGURA
+	public void rotateFig(double deg) {
+		AffineTransform at = new AffineTransform();
+		at.rotate(Math.toRadians(deg), Fig2D.getBounds().getCenterX(), Fig2D.getBounds().getCenterY());
+		Fig2D=at.createTransformedShape(Fig2D);
+	}
+	
+	//		ESCALAR LA FIGURA
+	public void scaleFig(double esc) {
+		AffineTransform at = new AffineTransform();
+		at.translate(Fig2D.getBounds2D().getCenterX(),Fig2D.getBounds2D().getCenterY());
+		at.scale(esc, esc);
+		at.translate(-Fig2D.getBounds2D().getCenterX(),-Fig2D.getBounds2D().getCenterY());
+		Fig2D=at.createTransformedShape(Fig2D);
+	}
+	
+	//		TRASLADAR LA FIGURA
+	public void translateFig(double tX, double tY) {
+		AffineTransform at = new AffineTransform();
+		at.translate(tX,tY);
+		Fig2D=at.createTransformedShape(Fig2D);
 	}
 }

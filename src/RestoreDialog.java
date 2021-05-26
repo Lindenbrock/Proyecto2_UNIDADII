@@ -15,25 +15,25 @@ public class RestoreDialog extends JDialog implements ActionListener{
 	JLabel lbl,lblimg;
 	JButton btnAllow,btnCancel;
 	
-	public RestoreDialog(MainInterface w,boolean modal) {
+	public RestoreDialog(UserInterface w,boolean modal) {
 		super(w.W,modal);
 		setTitle("Restaurar la figura");
 		setSize(350,180);
 		setLayout(new FlowLayout());
 		setLocationRelativeTo(w.W);
-		this.setBackground(w.uno);
+		this.setBackground(w.one);
 		
 		Image icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
 		setIconImage(icon);
 		
 		lbl = new JLabel("¿Estás seguro de que deseas restaurar la figura?");
-		lbl.setForeground(w.dos);
+		lbl.setForeground(w.two);
 		btnAllow = new JButton("Aceptar");
-		btnAllow.setBackground(w.tres);
-		btnAllow.setForeground(w.uno);
+		btnAllow.setBackground(w.three);
+		btnAllow.setForeground(w.one);
 		btnCancel = new JButton("Cancelar");
-		btnCancel.setBackground(w.tres);
-		btnCancel.setForeground(w.uno);
+		btnCancel.setBackground(w.three);
+		btnCancel.setForeground(w.one);
 		
 		URL ruta = getClass().getResource("/Resources/undog.gif");
 		lblimg = new JLabel(new ImageIcon(ruta));

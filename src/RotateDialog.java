@@ -21,41 +21,41 @@ public class RotateDialog extends JDialog{
 	ButtonGroup rbg;
 	JButton btnAllow,btnCancel;
 	
-	public RotateDialog(MainInterface w,boolean modal) {
+	public RotateDialog(UserInterface w,boolean modal) {
 		super(w.W,modal);
 		setTitle("Rotar la figura");
-		setSize(600,180);
+		setSize(650,210);
 		setLayout(new FlowLayout());
 		setLocationRelativeTo(w.W);
-		this.setBackground(w.uno);
+		this.setBackground(w.one);
 		
 		Image icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
 		setIconImage(icon);
 		
 		lbl1 = new JLabel("Cantidad a rotar");
-		lbl1.setForeground(w.dos);
+		lbl1.setForeground(w.two);
 		tf1 = new JTextField(10);
 		rbg = new ButtonGroup();
 		URL ruta = getClass().getResource("/Resources/rotate-left.png");
 		lbl2 = new JLabel(new ImageIcon(ruta));
 		rb1 = new JRadioButton("Rotar a la izquerda");
-		rb1.setForeground(w.dos);
+		rb1.setForeground(w.two);
 		rb1.setSelected(true);
 		ruta = getClass().getResource("/Resources/rotate-right.png");
 		lbl3 = new JLabel(new ImageIcon(ruta));
 		rb2 = new JRadioButton("Rotar a la derecha");
-		rb2.setForeground(w.dos);
+		rb2.setForeground(w.two);
 		rbg.add(rb1); rbg.add(rb2);
 		btnAllow = new JButton("Aceptar");
-		btnAllow.setBackground(w.tres);
-		btnAllow.setForeground(w.uno);
+		btnAllow.setBackground(w.three);
+		btnAllow.setForeground(w.one);
 		btnCancel = new JButton("Cancelar");
-		btnCancel.setBackground(w.tres);
+		btnCancel.setBackground(w.three);
 		
 		ruta = getClass().getResource("/Resources/rotateg.gif");
 		lblimg = new JLabel(new ImageIcon(ruta));
 		
-		btnCancel.setForeground(w.uno);
+		btnCancel.setForeground(w.one);
 		add(lbl1); add(tf1); add(lbl2); add(rb1); add(lbl3); add(rb2); add(lblimg); add(btnAllow); add(btnCancel);
 		
 		btnAllow.addActionListener(new ActionListener() {

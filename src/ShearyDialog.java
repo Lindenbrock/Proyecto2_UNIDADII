@@ -17,14 +17,14 @@ public class ShearyDialog extends JDialog{
 	JTextField tf1,tf2;
 	JButton btnAllow,btnCancel;
 	
-	public ShearyDialog(MainInterface w,boolean modal) {
+	public ShearyDialog(UserInterface w,boolean modal) {
 		super(w.W,modal);
 		setTitle("Deformar la figura");
-		setSize(600,220);
+		setSize(650,220);
 		setLayout(new FlowLayout());
 		setLocationRelativeTo(w.W);
-		this.setBackground(w.uno);
-		w.setBackground(w.uno);
+		this.setBackground(w.one);
+		w.setBackground(w.one);
 		
 		Image icon = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("Resources/icon.png"));
 		setIconImage(icon);
@@ -32,17 +32,17 @@ public class ShearyDialog extends JDialog{
 		URL ruta = getClass().getResource("/Resources/sheary.png");
 		lbl1 = new JLabel(new ImageIcon(ruta));
 		lbl2 = new JLabel("Cantidad a deformar en x");
-		lbl2.setForeground(w.dos);
+		lbl2.setForeground(w.two);
 		tf1 = new JTextField(10);
 		lbl3 = new JLabel("Cantidad a deformar en y");
-		lbl3.setForeground(w.dos);
+		lbl3.setForeground(w.two);
 		tf2 = new JTextField(10);
 		btnAllow = new JButton("Aceptar");
-		btnAllow.setBackground(w.tres);
-		btnAllow.setForeground(w.uno);
+		btnAllow.setBackground(w.three);
+		btnAllow.setForeground(w.one);
 		btnCancel = new JButton("Cancelar");
-		btnCancel.setBackground(w.tres);
-		btnCancel.setForeground(w.uno);
+		btnCancel.setBackground(w.three);
+		btnCancel.setForeground(w.one);
 		
 		ruta = getClass().getResource("/Resources/shearyg.gif");
 		lblimg = new JLabel(new ImageIcon(ruta));

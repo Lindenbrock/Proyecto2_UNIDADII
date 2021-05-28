@@ -1,3 +1,4 @@
+//Hecho por Luis José Ixta Zamudio 17420565
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -11,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
 public class ReflectDialog extends JDialog{
 	int rotType;

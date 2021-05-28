@@ -1,4 +1,4 @@
-import java.awt.FlowLayout;
+//Hecho por Luis José Ixta Zamudio 17420565
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;

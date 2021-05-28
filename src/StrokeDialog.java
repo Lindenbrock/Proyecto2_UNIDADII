@@ -1,3 +1,4 @@
+//Hecho por Luis José Ixta Zamudio 17420565
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FlowLayout;

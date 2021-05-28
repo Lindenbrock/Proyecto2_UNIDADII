@@ -107,7 +107,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 				else
 					move = false;
 					
-				repaint(); 
+				paintPanel.repaint(); 
 			}
 		});
 		
@@ -125,7 +125,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 					
 					Fig.translateFig(tX, tY);
 					
-					repaint();
+					paintPanel.repaint();
 				}
 			}
 		});
@@ -133,21 +133,18 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 	
 	//CONSTRUYENDO LA BARRA DE HERRAMIENTAS
 	public void buildToolBar() {
-		toolBar = new JToolBar("",JToolBar.VERTICAL);
+		toolBar = new JToolBar("",JToolBar.HORIZONTAL);
 		toolBar.setBackground(one);
 		toolBar.setFloatable(false);
-		add(toolBar,BorderLayout.EAST);
+		add(toolBar,BorderLayout.SOUTH);
 		
 		ruta = getClass().getResource("/Resources/undo.png"); //Botón de restaurar
 		Action A1=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
-            	/*boolean ans = new RestoreDialog(MainInterface.this,true).showDialog();
+            	boolean ans = new RestoreDialog(UserInterface.this,true).showDialog();
     			if(ans)
-    				if(pestañas.getSelectedIndex() == 0)
-    					fig1.restorePoint(1);
-    				else
-    					fig2.restorePoint(2);
-            	pestañas.repaint();*/
+    				Fig.restoreFig();
+            	paintPanel.repaint();
             }};
         A1.putValue(Action.SHORT_DESCRIPTION,"Devuelve la figura a su estado original");
         JButton btnA1 = new JButton(A1);
@@ -158,7 +155,8 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         ruta = getClass().getResource("/Resources/rotate-left.png"); //Botón de girar a la izquierda
 		Action A2=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
-            	
+            	Fig.rotateFig(-10);
+            	paintPanel.repaint();
             }};
         A2.putValue(Action.SHORT_DESCRIPTION,"Gira la figura a la izquerda");
         JButton btnA2 = new JButton(A2);
@@ -169,7 +167,8 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         ruta = getClass().getResource("/Resources/rotate-right.png"); //Botón de girar a al derecha
 		Action A3=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
-            	
+            	Fig.rotateFig(10);
+            	paintPanel.repaint();
             }};
         A3.putValue(Action.SHORT_DESCRIPTION,"Rota la figura a la derecha");
         JButton btnA3 = new JButton(A3);
@@ -180,7 +179,8 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         ruta = getClass().getResource("/Resources/refx.png"); //Botón de reflejar respecto al eje X
 		Action A4=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
-            	
+            	Fig.reflectFig(1, -1);
+            	paintPanel.repaint();
             }};
         A4.putValue(Action.SHORT_DESCRIPTION,"Refleja la figura con respecto al eje X");
         JButton btnA4 = new JButton(A4);
@@ -191,7 +191,8 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         ruta = getClass().getResource("/Resources/refy.png"); //Botón de reflejar respecto al eje Y
         Action A5=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
-            	
+            	Fig.reflectFig(-1, 1);
+            	paintPanel.repaint();
             }};
         A5.putValue(Action.SHORT_DESCRIPTION,"Refleja la figura con respecto al eje Y");
         JButton btnA5 = new JButton(A5);
@@ -202,7 +203,8 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         ruta = getClass().getResource("/Resources/refxy.png"); //Botón de reflejar respecto a ambos ejes
         Action A6=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
-            	
+            	Fig.reflectFig(-1, -1);
+            	paintPanel.repaint();
             }};
         A6.putValue(Action.SHORT_DESCRIPTION,"Refleja la figura sobre ambos ejes");
         JButton btnA6 = new JButton(A6);
@@ -213,7 +215,8 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         ruta = getClass().getResource("/Resources/close.png"); //Botón de aumentar tamaño
         Action A7=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
-            	
+            	Fig.scaleFig(1.1);
+            	paintPanel.repaint();
             }};
         A7.putValue(Action.SHORT_DESCRIPTION,"Aumenta el tamaño de la figura");
         JButton btnA7 = new JButton(A7);
@@ -224,7 +227,8 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         ruta = getClass().getResource("/Resources/far.png"); //Botón de disminuir tamaño
         Action A8=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
-            	
+            	Fig.scaleFig(.9);
+            	paintPanel.repaint();
             }};
         A8.putValue(Action.SHORT_DESCRIPTION,"Disminuye el tamaño de la figura");
         JButton btnA8 = new JButton(A8);
@@ -232,10 +236,57 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         btnA8.setBackground(one);
         toolBar.add(btnA8);
         
+        ruta = getClass().getResource("/Resources/gradient.png"); //Botón de relleno gradiente
+		Action A10=new AbstractAction("", new ImageIcon(ruta)){
+            public void actionPerformed(ActionEvent arg0) {
+            	int GradientData[] = new ColorGradientDialog(UserInterface.this,true).showDialog();
+            	if(GradientData[8] == 1) {
+            		Fig.setGradientPaintData(GradientData);
+            		paintPanel.repaint();
+            	}
+            }};
+        A10.putValue(Action.SHORT_DESCRIPTION,"Rellena la figura con color grandiente");
+        JButton btnA10 = new JButton(A10);
+        btnA10.setBorder(null);
+        btnA10.setBackground(one);
+        toolBar.add(btnA10);
+        
+        ruta = getClass().getResource("/Resources/image.png"); //Botón de relleno con imagen
+		Action A11=new AbstractAction("", new ImageIcon(ruta)){
+            public void actionPerformed(ActionEvent arg0) {
+            	String imgRoute[] = new ImageFillDialog(UserInterface.this,true).showDialog();
+            	if(Integer.parseInt(imgRoute[1]) == 1) {
+            		Fig.setImageData(imgRoute);
+            		paintPanel.repaint();
+            	}
+            }};
+        A11.putValue(Action.SHORT_DESCRIPTION,"Rellena con una imagen");
+        JButton btnA11 = new JButton(A11);
+        btnA11.setBorder(null);
+        btnA11.setBackground(one);
+        toolBar.add(btnA11);
+        
+        ruta = getClass().getResource("/Resources/border.png"); //Botón de aplicar efectos de borde
+		Action A12=new AbstractAction("", new ImageIcon(ruta)){
+            public void actionPerformed(ActionEvent arg0) {
+            	int StrokeData[] = new StrokeDialog(UserInterface.this,true).showDialog();
+            	if(StrokeData[11] == 1) {
+            		Fig.setStrokeData(StrokeData);
+            		paintPanel.repaint();
+            	}
+            }};
+        A12.putValue(Action.SHORT_DESCRIPTION,"Aplica efectos de borde");
+        JButton btnA12 = new JButton(A12);
+        btnA12.setBorder(null);
+        btnA12.setBackground(one);
+        toolBar.add(btnA12);
+        
         ruta = getClass().getResource("/Resources/exit.png"); //Salir del programa
         Action A9=new AbstractAction("", new ImageIcon(ruta)){
             public void actionPerformed(ActionEvent arg0) {
-            	
+            	boolean ans = new ExitDialog(UserInterface.this,true).showDialog();
+				if(ans)
+					System.exit(0);
             }};
         A9.putValue(Action.SHORT_DESCRIPTION,"Salir del programa");
         JButton btnA9 = new JButton(A9);
@@ -243,7 +294,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
         btnA9.setBackground(one);
         toolBar.add(btnA9);
 	}
-	
+
 	//CONSTRUYENDO EL MENU
 	private void buildMenu() {
 		menuBar = new JMenuBar();
@@ -275,63 +326,54 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		menu2.add(menuOptions[7]); menu2.add(menuOptions[8]); //Los últimos items se agregan al otro menu
 		
 		menuOptions[0].addActionListener(this);  //Opción para restaurar
-		menuOptions[0].setMnemonic('R');
 		menuOptions[0].setToolTipText("Restaura la figura a su forma originaL");
 		ruta = getClass().getResource("/Resources/undo.png");
 		menuOptions[0].setIcon(new ImageIcon(ruta));
 		menuOptions[0].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U,InputEvent.ALT_MASK));
 		
 		menuOptions[1].addActionListener(this);  //Opción para escalar
-		menuOptions[1].setMnemonic('E');
 		menuOptions[1].setToolTipText("Cambia el tamaño de la figura");
 		ruta = getClass().getResource("/Resources/scale.png");
 		menuOptions[1].setIcon(new ImageIcon(ruta));
 		menuOptions[1].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.ALT_MASK));
 		
 		menuOptions[2].addActionListener(this);  //Opción para deformar
-		menuOptions[2].setMnemonic('D');
 		menuOptions[2].setToolTipText("Cambia la forma de la figura");
 		ruta = getClass().getResource("/Resources/sheary.png");
 		menuOptions[2].setIcon(new ImageIcon(ruta));
 		menuOptions[2].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.ALT_MASK));
 		
 		menuOptions[3].addActionListener(this);  //Opción para girar
-		menuOptions[3].setMnemonic('G');
 		menuOptions[3].setToolTipText("Gira la figura");
 		ruta = getClass().getResource("/Resources/rotate-right.png");
 		menuOptions[3].setIcon(new ImageIcon(ruta));
 		menuOptions[3].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,InputEvent.ALT_MASK));
 		
 		menuOptions[4].addActionListener(this);  //Opción para trasladar
-		menuOptions[4].setMnemonic('T');
 		menuOptions[4].setToolTipText("Traslada la figura a un pundo deseado");
 		ruta = getClass().getResource("/Resources/move.png");
 		menuOptions[4].setIcon(new ImageIcon(ruta));
 		menuOptions[4].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,InputEvent.ALT_MASK));
 		
 		menuOptions[5].addActionListener(this); //Opción para felejar
-		menuOptions[5].setMnemonic('R');
 		menuOptions[5].setToolTipText("Refleja la figura");
 		ruta = getClass().getResource("/Resources/refy.png");
 		menuOptions[5].setIcon(new ImageIcon(ruta));
 		menuOptions[5].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,InputEvent.ALT_MASK));
 		
 		menuOptions[6].addActionListener(this);  //Opción para salir del programa
-		menuOptions[6].setMnemonic('S');
 		menuOptions[6].setToolTipText("Salir del programa");
 		ruta = getClass().getResource("/Resources/exit.png");
 		menuOptions[6].setIcon(new ImageIcon(ruta));
 		menuOptions[6].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,InputEvent.ALT_MASK));
 		
 		menuOptions[7].addActionListener(this);  //Opción para información del desarrollador
-		menuOptions[7].setMnemonic('A');
 		menuOptions[7].setToolTipText("Muestra la información del desarrollador");
 		ruta = getClass().getResource("/Resources/developer.png");
 		menuOptions[7].setIcon(new ImageIcon(ruta));
 		menuOptions[7].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,InputEvent.ALT_MASK));
 		
 		menuOptions[8].addActionListener(this); //Opción para ventana de ayuda
-		menuOptions[8].setMnemonic('H');
 		menuOptions[8].setToolTipText("Muestra una ayudar sobre el funcionamiento del programa");
 		ruta = getClass().getResource("/Resources/help.png");
 		menuOptions[8].setIcon(new ImageIcon(ruta));
@@ -342,49 +384,31 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 	public void actionPerformed(ActionEvent ev) {
 		if(ev.getSource() == menuOptions[0]) {  //Evento menu Restaurar
 			boolean ans = new RestoreDialog(UserInterface.this,true).showDialog();
-			/*if(ans)
-				if(pestañas.getSelectedIndex() == 0)
-					fig1.restorePoint(1);
-				else
-					fig2.restorePoint(2);*/
+			if(ans)
+				Fig.restoreFig();
 		} else
 			if(ev.getSource() == menuOptions[1]) {  //Evento menu Escalar
 				double esc = new ScaleDialog(UserInterface.this,true).showDialog();
-				/*if(pestañas.getSelectedIndex() == 0)
-					fig1.scaleHPoint(esc,1);
-				else
-					fig2.scaleHPoint(esc,2);*/
+				Fig.scaleFig(esc);
 			}else
 				if(ev.getSource() == menuOptions[2]) {  //Evento menu Deformar
 					double[] she = new ShearyDialog(UserInterface.this,true).showDialog();
-					/*if(pestañas.getSelectedIndex() == 0)
-						fig1.shearyHPoint(she[0],she[1],1);
-					else
-						fig2.shearyHPoint(she[0],she[1],2);*/
+					Fig.shearyFig(she[0],she[1]);
 				}else
 					if(ev.getSource() == menuOptions[3]) {  //Evento menu Rotar
 						int[] rot = new RotateDialog(UserInterface.this,true).showDialog();
-						/*if(rot[1] == 1)
-							if(pestañas.getSelectedIndex() == 0)
-								fig1.rotateCosHPoint(rot[0],1);
-							else
-								fig2.rotateCosHPoint(rot[0],2);
+						if(rot[1] == 1)
+							Fig.rotateFig(-rot[0]);
 						else
-							if(pestañas.getSelectedIndex() == 0)
-								fig1.rotateSinHPoint(rot[0],1);
-							else
-								fig2.rotateSinHPoint(rot[0],2);*/
+							Fig.rotateFig(rot[0]);
 					}else
 						if(ev.getSource() == menuOptions[4]) {  //Evento menu Trasladar
 							int[] move= new TranslateDialog(UserInterface.this,true).showDialog();
-							/*if(pestañas.getSelectedIndex() == 0)
-								fig1.movePoint(move[0],move[1],1);
-							else
-								fig2.movePoint(move[0],move[1],2);*/
+							Fig.translateFig(move[0],move[1]);
 						}else
 							if(ev.getSource() == menuOptions[5]) {  //Evento menu Reflejar
 								int ans = new ReflectDialog(UserInterface.this,true).showDialog(),refx,refy;
-								/*if(ans == 1) {
+								if(ans == 1) {
 									refx = 1; refy = -1;
 								} else 
 									if(ans == 2) {
@@ -398,10 +422,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 											refx = 1; refy = 1;
 										}
 								
-								if(pestañas.getSelectedIndex() == 0)
-									fig1.reflectHPoint(refx,refy,1);
-								else
-									fig2.reflectHPoint(refx,refy,2);*/
+								Fig.reflectFig(refx,refy);
 							}else
 								if(ev.getSource() == menuOptions[6]) {  //Evento menu Salir
 									boolean ans = new ExitDialog(UserInterface.this,true).showDialog();
@@ -413,7 +434,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 									//else
 										if(ev.getSource() == menuOptions[8]) //Evento menu Ayuda
 											new HelpDialog(UserInterface.this,true).showDialog();
-		repaint();
+		paintPanel.repaint();
 	}
 	
 	//EVENTO DE RUEDA DEL RATÓN PARA AUMENTAR O DISMINUIR EL TAMAÑO
@@ -426,7 +447,7 @@ public class UserInterface extends JFrame implements ActionListener, MouseWheelL
 		else
 			esc = 1.05;
 		Fig.scaleFig(esc);
-		repaint();
+		paintPanel.repaint();
 	}
 	
 	//MÉTODO MAIN PARA INICIAR PROGRAMA

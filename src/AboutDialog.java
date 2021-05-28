@@ -25,7 +25,7 @@ public class AboutDialog extends JDialog{
 		setIconImage(icon);
 		
 		lbl1 = new JLabel("Desarrollado por:\n");
-		lbl1.setForeground(w.one);
+		lbl1.setForeground(w.two);
 		lbl1.setBounds(10, 10, 250, 20);
 		lbl2 = new JLabel("Luis José Ixta Zamudio\n");
 		lbl2.setForeground(w.two);
